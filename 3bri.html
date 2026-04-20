@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عبري - دفتر ذكرياتنا</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8a2be2;
+            --primary-dark: #6a0dad;
+            --primary-light: #9370db;
+            --accent: #ff6b6b;
+            --text: #fff;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a0633, #3c1361, #6a0dad);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 25px 0;
+            background: linear-gradient(to right, rgba(106, 13, 173, 0.7), rgba(138, 43, 226, 0.7));
+            border-radius: 0 0 25px 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z" fill="white"/></svg>');
+            background-size: 80px;
+            opacity: 0.1;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        /* Navigation Styles */
+        nav {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Page Styles */
+        .page {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        /* Add Memory Form */
+        .add-memory-form {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-delete {
+            background: linear-gradient(to right, #ff6b6b, #ff4757);
+        }
+        
+        /* Memory Grid */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .memory-item {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        .memory-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .memory-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .memory-text {
+            padding: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .memory-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .memory-actions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+            transform: scale(1.1);
+        }
+        
+        /* Text Memory Styles */
+        .text-memory {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .text-memory h3 {
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+        
+        /* Special Memory Styles */
+        .special-memory {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            border-left: 4px solid var(--primary-light);
+        }
+        
+        .special-memory h3 {
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+            color: var(--primary-light);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0.7;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary-light);
+        }
+        
+        /* Login Styles */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .login-form h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            font-size: 1rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .password-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .login-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to right, rgba(106, 13, 173, 0.8), rgba(138, 43, 226, 0.8));
+            font-size: 0.9rem;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 750px;
+                margin: 0 auto;
+            }
+            
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .memory-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="login-form">
+            <h2>عبري - دفتر ذكرياتنا</h2>
+            <p>أدخل كلمة المرور للدخول إلى مساحتنا الخاصة</p>
+            <input type="password" id="password-input" class="password-input" placeholder="كلمة المرور">
+            <button id="login-btn" class="login-btn">دخول</button>
+            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">ذكرياتنا ❤️</p>
+        </div>
+    </div>
+    
+    <!-- Main Content (Hidden until login) -->
+    <div id="main-content" style="display: none;">
+        <header>
+            <h1>عبري</h1>
+            <p class="subtitle">دفتر ذكرياتنا الإلكتروني</p>
+        </header>
+        
+        <div class="container">
+            <nav>
+                <button class="nav-btn active" data-page="pictures">
+                    <i class="fas fa-images"></i>
+                    الصور
+                </button>
+                <button class="nav-btn" data-page="texts">
+                    <i class="fas fa-comment-dots"></i>
+                    كلام جميل
+                </button>
+                <button class="nav-btn" data-page="memories">
+                    <i class="fas fa-heart"></i>
+                    مواقف حلوة
+                </button>
+                <button class="nav-btn" data-page="voice">
+                    <i class="fas fa-microphone"></i>
+                    رسائل صوتية
+                </button>
+            </nav>
+            
+            <!-- Pictures Page -->
+            <div id="pictures" class="page active">
+                <h2 class="page-title">
+                    <i class="fas fa-images"></i>
+                    صور تذكرنا بشيء
+                </h2>
+                
+                <div class="add-memory-form">
+                    <h3 style="margin-bottom: 15px;">إضافة صورة جديدة</h3>
+                    <div class="form-group">
+                        <label class="form-label">عنوان الصورة</label>
+                        <input type="text" id="picture-title" class="form-input" placeholder="اكتب عنوانًا للصورة">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">رابط الصورة</label>
+                        <input type="text" id="picture-url" class="form-input" placeholder="https://example.com/image.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">وصف الصورة</label>
+                        <textarea id="picture-desc" class="form-textarea" placeholder="اكتب وصفًا للصورة..."></textarea>
+                    </div>
+                    <button id="add-picture" class="btn">
+                        <i class="fas fa-plus"></i>
+                        إضافة الصورة
+                    </button>
+                </div>
+                
+                <div id="pictures-container" class="memory-grid">
+                    <!-- Pictures will be added here dynamically -->
+                    <div class="empty-state" id="empty-pictures">
+                        <i class="fas fa-image"></i>
+                        <p>لا توجد صور حتى الآن. ابدأ بإضافة أول صورة!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Texts Page -->
+            <div id="texts" class="page">
+                <h2 class="page-title">
+                    <i class="fas fa-comment-dots"></i>
+                    كلام جميل
+                </h2>
+                
+                <div class="add-memory-form">
+                    <h3 style="margin-bottom: 15px;">إضافة كلام جميل</h3>
+                    <div class="form-group">
+                        <label class="form-label">العنوان</label>
+                        <input type="text" id="text-title" class="form-input" placeholder="اكتب عنوانًا للكلام الجميل">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">الكلام الجميل</label>
+                        <textarea id="text-content" class="form-textarea" placeholder="اكتب كلامك الجميل هنا..."></textarea>
+                    </div>
+                    <button id="add-text" class="btn">
+                        <i class="fas fa-plus"></i>
+                        إضافة الكلام
+                    </button>
+                </div>
+                
+                <div id="texts-container">
+                    <!-- Texts will be added here dynamically -->
+                    <div class="empty-state" id="empty-texts">
+                        <i class="fas fa-comments"></i>
+                        <p>لا يوجد كلام جميل حتى الآن. ابدأ بإضافة أول رسالة!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Special Memories Page -->
+            <div id="memories" class="page">
+                <h2 class="page-title">
+                    <i class="fas fa-heart"></i>
+                    مواقف حلوة
+                </h2>
+                
+                <div class="add-memory-form">
+                    <h3 style="margin-bottom: 15px;">إضافة موقف حلو</h3>
+                    <div class="form-group">
+                        <label class="form-label">عنوان الموقف</label>
+                        <input type="text" id="memory-title" class="form-input" placeholder="اكتب عنوانًا للموقف">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تفاصيل الموقف</label>
+                        <textarea id="memory-content" class="form-textarea" placeholder="اكتب تفاصيل الموقف الحلو هنا..."></textarea>
+                    </div>
+                    <button id="add-memory" class="btn">
+                        <i class="fas fa-plus"></i>
+                        إضافة الموقف
+                    </button>
+                </div>
+                
+                <div id="memories-container">
+                    <!-- Memories will be added here dynamically -->
+                    <div class="empty-state" id="empty-memories">
+                        <i class="fas fa-heart"></i>
+                        <p>لا توجد مواقف حلوة حتى الآن. ابدأ بإضافة أول موقف!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Voice Messages Page -->
+            <div id="voice" class="page">
+                <h2 class="page-title">
+                    <i class="fas fa-microphone"></i>
+                    رسائل صوتية
+                </h2>
+                
+                <div class="add-memory-form" style="text-align: center;">
+                    <h3 style="margin-bottom: 15px;">تسجيل رسالة جديدة</h3>
+                    <div class="form-group" style="text-align: right;">
+                        <label class="form-label">عنوان الرسالة</label>
+                        <input type="text" id="voice-title" class="form-input" placeholder="اكتب عنوانًا للرسالة الصوتية">
+                    </div>
+                    <div style="margin: 20px 0; display: flex; justify-content: center; gap: 15px;">
+                        <button id="start-recording" class="btn" style="background: linear-gradient(to right, #4caf50, #45a049); min-width: 120px;">
+                            <i class="fas fa-circle"></i> بدء التسجيل
+                        </button>
+                        <button id="stop-recording" class="btn" style="background: linear-gradient(to right, #f44336, #d32f2f); min-width: 120px;" disabled>
+                            <i class="fas fa-stop"></i> إيقاف التسجيل
+                        </button>
+                    </div>
+                    <p id="recording-status" style="color: var(--accent); margin-bottom: 15px; display: none; font-weight: bold;">جاري التسجيل... <span id="recording-time">00:00</span></p>
+                    <div id="audio-preview-container" style="display: none; margin-bottom: 15px;">
+                        <audio id="audio-preview" controls style="width: 100%; border-radius: 10px;"></audio>
+                        <button id="add-voice" class="btn" style="margin-top: 15px; width: 100%;">
+                            <i class="fas fa-save"></i> حفظ الرسالة
+                        </button>
+                    </div>
+                    <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 10px;">ملاحظة: يتم حفظ الرسائل الصوتية في المتصفح، قد لا تتمكن من تسجيل رسائل طويلة جداً بسبب سعة التخزين.</p>
+                </div>
+                
+                <div id="voice-container">
+                    <!-- Voice messages will be added here dynamically -->
+                    <div class="empty-state" id="empty-voice">
+                        <i class="fas fa-microphone-slash"></i>
+                        <p>لا توجد رسائل صوتية حتى الآن. ابدأ بتسجيل أول رسالة!</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <footer>
+            <p>عبري - دفتر ذكرياتنا الإلكتروني ❤️</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+        const firebaseConfig = {
+          apiKey: "AIzaSyByl1P9z-qtYw0FMTFDsR29pGGE_wnpy4M",
+          authDomain: "bri-diary.firebaseapp.com",
+          projectId: "bri-diary",
+          storageBucket: "bri-diary.firebasestorage.app",
+          messagingSenderId: "651617672789",
+          appId: "1:651617672789:web:fce9b0ea06cc6ea6597edc",
+          measurementId: "G-J55E8F0SDE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Memory Management
+        let memories = { pictures: [], texts: [], memories: [], voiceMessages: [] };
+
+        function listenToMemories() {
+            const errorCallback = (error) => {
+                console.error("Firebase Snapshot Error:", error);
+                if (error.message.includes('Missing or insufficient permissions') || error.code === 'permission-denied') {
+                    console.error("خطأ في الصلاحيات! يرجى التأكد من أن قواعد Firebase (Firestore Rules) مضبوطة على Test Mode (allow read, write: if true;).");
+                    // alert("خطأ في الصلاحيات! يرجى تحديث قواعد Firebase (Rules) لتسمح بالقراءة والكتابة.");
+                }
+            };
+
+            onSnapshot(query(collection(db, 'pictures'), orderBy('timestamp', 'asc')), (snapshot) => {
+                memories.pictures = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderPictures();
+            }, errorCallback);
+            onSnapshot(query(collection(db, 'texts'), orderBy('timestamp', 'asc')), (snapshot) => {
+                memories.texts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderTexts();
+            }, errorCallback);
+            onSnapshot(query(collection(db, 'special_memories'), orderBy('timestamp', 'asc')), (snapshot) => {
+                memories.memories = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderSpecialMemories();
+            }, errorCallback);
+            onSnapshot(query(collection(db, 'voiceMessages'), orderBy('timestamp', 'asc')), (snapshot) => {
+                memories.voiceMessages = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderVoiceMessages();
+            }, errorCallback);
+        }
+
+        async function migrateLocalStorage() {
+            if (localStorage.getItem('migratedToFirebase')) return;
+            const savedMemories = localStorage.getItem('ourMemories');
+            if (!savedMemories) return;
+            
+            try {
+                const parsed = JSON.parse(savedMemories);
+                if (parsed.pictures) {
+                    for (const p of parsed.pictures) await addDoc(collection(db, 'pictures'), { ...p, timestamp: serverTimestamp() });
+                }
+                if (parsed.texts) {
+                    for (const t of parsed.texts) await addDoc(collection(db, 'texts'), { ...t, timestamp: serverTimestamp() });
+                }
+                if (parsed.memories) {
+                    for (const m of parsed.memories) await addDoc(collection(db, 'special_memories'), { ...m, timestamp: serverTimestamp() });
+                }
+                if (parsed.voiceMessages) {
+                    for (const v of parsed.voiceMessages) {
+                        try {
+                            await addDoc(collection(db, 'voiceMessages'), {
+                                title: v.title,
+                                audioData: v.audioData,
+                                date: v.date,
+                                timestamp: serverTimestamp()
+                            });
+                        } catch(e) { console.error("Migration audio err", e); }
+                    }
+                }
+                localStorage.setItem('migratedToFirebase', 'true');
+                console.log('Migration complete');
+            } catch (e) { console.error('Migration failed', e); }
+        }
+
+        // Password protection
+        const correctPassword = "2025/4/27";
+        const loginScreen = document.getElementById('login-screen');
+        const mainContent = document.getElementById('main-content');
+        const passwordInput = document.getElementById('password-input');
+        const loginBtn = document.getElementById('login-btn');
+        
+        function handleLogin() {
+            const enteredPassword = passwordInput.value;
+            if (enteredPassword === correctPassword) {
+                loginScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                listenToMemories();
+                setTimeout(migrateLocalStorage, 1500); // Backwards compatibility for existing local data
+            } else {
+                alert('كلمة المرور غير صحيحة. حاول مرة أخرى.');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        loginBtn.addEventListener('click', handleLogin);
+        passwordInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
+        
+        // Navigation between pages
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page');
+        
+        navButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                pages.forEach(page => page.classList.remove('active'));
+                this.classList.add('active');
+                const pageId = this.getAttribute('data-page');
+                document.getElementById(pageId).classList.add('active');
+            });
+        });
+        
+        // Render pictures
+        function renderPictures() {
+            const container = document.getElementById('pictures-container');
+            if (memories.pictures.length === 0) {
+                container.innerHTML = `<div class="empty-state" id="empty-pictures"><i class="fas fa-image"></i><p>لا توجد صور حتى الآن. ابدأ بإضافة أول صورة!</p></div>`;
+                return;
+            }
+            container.innerHTML = '';
+            memories.pictures.forEach((picture) => {
+                const pictureElement = document.createElement('div');
+                pictureElement.className = 'memory-item';
+                pictureElement.innerHTML = `
+                    <div class="memory-actions">
+                        <button class="action-btn delete-picture" data-id="${picture.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <img src="${picture.url}" alt="${picture.title}" class="memory-img" onerror="this.src='https://via.placeholder.com/300x200/6a0dad/ffffff?text=صورة+غير+متوفرة'">
+                    <div class="memory-text">
+                        <div class="memory-title">${picture.title}</div>
+                        <p>${picture.desc}</p>
+                    </div>`;
+                container.appendChild(pictureElement);
+            });
+            document.querySelectorAll('.delete-picture').forEach(button => {
+                button.addEventListener('click', async function() {
+                    if(!confirm('هل أنت متأكد من حذف هذه الصورة؟')) return;
+                    await deleteDoc(doc(db, 'pictures', this.getAttribute('data-id')));
+                });
+            });
+        }
+        
+        // Render texts
+        function renderTexts() {
+            const container = document.getElementById('texts-container');
+            if (memories.texts.length === 0) {
+                container.innerHTML = `<div class="empty-state" id="empty-texts"><i class="fas fa-comments"></i><p>لا يوجد كلام جميل حتى الآن. ابدأ بإضافة أول رسالة!</p></div>`;
+                return;
+            }
+            container.innerHTML = '';
+            memories.texts.forEach((text) => {
+                const textElement = document.createElement('div');
+                textElement.className = 'text-memory';
+                textElement.innerHTML = `
+                    <div class="memory-actions">
+                        <button class="action-btn delete-text" data-id="${text.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <h3>${text.title}</h3>
+                    <p>${text.content}</p>`;
+                container.appendChild(textElement);
+            });
+            document.querySelectorAll('.delete-text').forEach(button => {
+                button.addEventListener('click', async function() {
+                    if(!confirm('هل أنت متأكد من الحذف؟')) return;
+                    await deleteDoc(doc(db, 'texts', this.getAttribute('data-id')));
+                });
+            });
+        }
+        
+        // Render special memories
+        function renderSpecialMemories() {
+            const container = document.getElementById('memories-container');
+            if (memories.memories.length === 0) {
+                container.innerHTML = `<div class="empty-state" id="empty-memories"><i class="fas fa-heart"></i><p>لا توجد مواقف حلوة حتى الآن. ابدأ بإضافة أول موقف!</p></div>`;
+                return;
+            }
+            container.innerHTML = '';
+            memories.memories.forEach((memory) => {
+                const memoryElement = document.createElement('div');
+                memoryElement.className = 'special-memory';
+                memoryElement.innerHTML = `
+                    <div class="memory-actions">
+                        <button class="action-btn delete-memory" data-id="${memory.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <h3>${memory.title}</h3>
+                    <p>${memory.content}</p>`;
+                container.appendChild(memoryElement);
+            });
+            document.querySelectorAll('.delete-memory').forEach(button => {
+                button.addEventListener('click', async function() {
+                    if(!confirm('هل أنت متأكد من الحذف؟')) return;
+                    await deleteDoc(doc(db, 'special_memories', this.getAttribute('data-id')));
+                });
+            });
+        }
+        
+        // Render voice messages
+        function renderVoiceMessages() {
+            const container = document.getElementById('voice-container');
+            if (memories.voiceMessages.length === 0) {
+                container.innerHTML = `<div class="empty-state" id="empty-voice"><i class="fas fa-microphone-slash"></i><p>لا توجد رسائل صوتية حتى الآن. ابدأ بتسجيل أول رسالة!</p></div>`;
+                return;
+            }
+            container.innerHTML = '';
+            memories.voiceMessages.forEach((msg) => {
+                const voiceElement = document.createElement('div');
+                voiceElement.className = 'special-memory';
+                voiceElement.innerHTML = `
+                    <div class="memory-actions">
+                        <button class="action-btn delete-voice" data-id="${msg.id}" data-path="${msg.storagePath || ''}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3>${msg.title}</h3>
+                        <small style="opacity: 0.7;">${msg.date || ''}</small>
+                    </div>
+                    <audio controls src="${msg.audioData}" style="width: 100%; border-radius: 10px;"></audio>`;
+                container.appendChild(voiceElement);
+            });
+            document.querySelectorAll('.delete-voice').forEach(button => {
+                button.addEventListener('click', async function() {
+                    if(!confirm('هل أنت متأكد من الحذف؟')) return;
+                    await deleteDoc(doc(db, 'voiceMessages', this.getAttribute('data-id')));
+                });
+            });
+        }
+
+        // Add new picture
+        document.getElementById('add-picture').addEventListener('click', async function() {
+            const title = document.getElementById('picture-title').value.trim();
+            const url = document.getElementById('picture-url').value.trim();
+            const desc = document.getElementById('picture-desc').value.trim();
+            if (!title || !url || !desc) { alert('يرجى ملء جميع الحقول'); return; }
+            
+            const btn = this; btn.disabled = true;
+            try {
+                await addDoc(collection(db, 'pictures'), { title, url, desc, timestamp: serverTimestamp() });
+                document.getElementById('picture-title').value = '';
+                document.getElementById('picture-url').value = '';
+                document.getElementById('picture-desc').value = '';
+            } catch(e) { alert("حدث خطأ أثناء الحفظ"); console.error(e); }
+            btn.disabled = false;
+        });
+        
+        // Add new text
+        document.getElementById('add-text').addEventListener('click', async function() {
+            const title = document.getElementById('text-title').value.trim();
+            const content = document.getElementById('text-content').value.trim();
+            if (!title || !content) { alert('يرجى ملء جميع الحقول'); return; }
+            
+            const btn = this; btn.disabled = true;
+            try {
+                await addDoc(collection(db, 'texts'), { title, content, timestamp: serverTimestamp() });
+                document.getElementById('text-title').value = '';
+                document.getElementById('text-content').value = '';
+            } catch(e) { alert("حدث خطأ أثناء الحفظ"); console.error(e); }
+            btn.disabled = false;
+        });
+        
+        // Add new memory
+        document.getElementById('add-memory').addEventListener('click', async function() {
+            const title = document.getElementById('memory-title').value.trim();
+            const content = document.getElementById('memory-content').value.trim();
+            if (!title || !content) { alert('يرجى ملء جميع الحقول'); return; }
+            
+            const btn = this; btn.disabled = true;
+            try {
+                await addDoc(collection(db, 'special_memories'), { title, content, timestamp: serverTimestamp() });
+                document.getElementById('memory-title').value = '';
+                document.getElementById('memory-content').value = '';
+            } catch(e) { alert("حدث خطأ أثناء الحفظ"); console.error(e); }
+            btn.disabled = false;
+        });
+        
+        // Voice Recording Logic
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingInterval;
+        let recordingSeconds = 0;
+        let currentAudioBase64 = null;
+
+        const startBtn = document.getElementById('start-recording');
+        const stopBtn = document.getElementById('stop-recording');
+        const statusText = document.getElementById('recording-status');
+        const timeText = document.getElementById('recording-time');
+        const previewContainer = document.getElementById('audio-preview-container');
+        const audioPreview = document.getElementById('audio-preview');
+        const addVoiceBtn = document.getElementById('add-voice');
+
+        if (startBtn) {
+            startBtn.addEventListener('click', async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            currentAudioBase64 = reader.result;
+                            audioPreview.src = currentAudioBase64;
+                            previewContainer.style.display = 'block';
+                        };
+                        stream.getTracks().forEach(track => track.stop());
+                    });
+
+                    mediaRecorder.start();
+                    startBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    statusText.style.display = 'block';
+                    previewContainer.style.display = 'none';
+                    currentAudioBase64 = null;
+                    audioPreview.src = '';
+
+                    recordingSeconds = 0;
+                    timeText.textContent = '00:00';
+                    recordingInterval = setInterval(() => {
+                        recordingSeconds++;
+                        const m = Math.floor(recordingSeconds / 60).toString().padStart(2, '0');
+                        const s = (recordingSeconds % 60).toString().padStart(2, '0');
+                        timeText.textContent = `${m}:${s}`;
+                    }, 1000);
+                } catch (err) {
+                    alert('لا يمكن الوصول إلى الميكروفون. يرجى التأكد من إعطاء الصلاحيات.');
+                    console.error(err);
+                }
+            });
+        }
+
+        if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                    clearInterval(recordingInterval);
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    statusText.style.display = 'none';
+                }
+            });
+        }
+
+        if (addVoiceBtn) {
+            addVoiceBtn.addEventListener('click', async () => {
+                const title = document.getElementById('voice-title').value.trim();
+                if (!title) { alert('يرجى إدخال عنوان للرسالة الصوتية'); return; }
+                if (!currentAudioBase64) { alert('يرجى تسجيل رسالة صوتية أولاً'); return; }
+
+                const btn = document.getElementById('add-voice');
+                btn.disabled = true;
+                const oldContent = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
+
+                try {
+                    await addDoc(collection(db, 'voiceMessages'), {
+                        title: title,
+                        audioData: currentAudioBase64,
+                        date: new Date().toLocaleDateString('ar-EG'),
+                        timestamp: serverTimestamp()
+                    });
+
+                    document.getElementById('voice-title').value = '';
+                    previewContainer.style.display = 'none';
+                    currentAudioBase64 = null;
+                    audioPreview.src = '';
+                } catch(e) {
+                    alert('حدث خطأ أثناء تحميل الرسالة الصوتية.');
+                    console.error(e);
+                }
+                btn.disabled = false;
+                btn.innerHTML = oldContent;
+            });
+        }
+        
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    </script>
+</body>
+</html>
